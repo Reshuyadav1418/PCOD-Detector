@@ -24,7 +24,10 @@ function Auth() {
 
     try {
       const response = await axios.post(endpoint, form);
-      setMessage(response.data.message || (isLogin ? "Login successful" : "Registration successful"));
+      setMessage(
+        response.data.message ||
+          (isLogin ? "Login successful" : "Registration successful"),
+      );
       setMessageType("success"); // Green message for success
 
       if (response.data.token) {
@@ -38,7 +41,7 @@ function Auth() {
         }, 2000);
       } else {
         setIsLoading(false);
-        
+
         // If we're registering and no token was returned, switch to login
         if (!isLogin) {
           setMessage("Registration successful! Please log in.");
@@ -46,7 +49,9 @@ function Auth() {
         }
       }
     } catch (error) {
-      setMessage(error.response?.data?.message || "An error occurred. Please try again.");
+      setMessage(
+        error.response?.data?.message || "An error occurred. Please try again.",
+      );
       setMessageType("error"); // Red message for error
       setIsLoading(false); // Stop loading
     }
@@ -55,35 +60,38 @@ function Auth() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    console.log('Attempting login with:', { email: form.username, password: form.password });
-    
+
+    console.log("Attempting login with:", {
+      email: form.username,
+      password: form.password,
+    });
+
     try {
-      // Try the login endpoint
-      const res = await axios.post('/api/login', form);
-      
-      console.log('Direct login response:', res.data);
-      
+      // Try the direct login endpoint first to verify basic connectivity
+      const res = await axios.post("/api/login/direct", {});
+
+      console.log("Direct login response:", res.data);
+
       // Store the token and username in localStorage
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('username', res.data.username);
-      
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("username", res.data.username);
+
       // Show success message
       setMessage("Login successful!");
       setMessageType("success");
-      
+
       // Redirect to Home2 page after successful login
       setTimeout(() => {
-        navigate('/home2');
+        navigate("/home2");
       }, 1000);
-      
     } catch (error) {
-      console.error('Login error:', error);
-      console.error('Login error status:', error.response?.status);
-      console.error('Login error details:', error.response?.data);
-      
+      console.error("Login error:", error);
+      console.error("Login error status:", error.response?.status);
+      console.error("Login error details:", error.response?.data);
+
       // Show the specific error message from the server if available
-      const errorMessage = error.response?.data?.msg || 'Login failed. Please try again.';
+      const errorMessage =
+        error.response?.data?.msg || "Login failed. Please try again.";
       setMessage(errorMessage);
       setMessageType("error");
     } finally {
@@ -142,14 +150,32 @@ function Auth() {
           >
             {isLoading ? (
               <div className="flex items-center justify-center">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Loading...
               </div>
+            ) : isLogin ? (
+              "Login"
             ) : (
-              isLogin ? "Login" : "Register"
+              "Register"
             )}
           </button>
         </form>

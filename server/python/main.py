@@ -25,7 +25,9 @@ X = df.drop('PCOS (Y/N)', axis=1)  # Replace 'PCOS (Y/N)' with your target colum
 y = df['PCOS (Y/N)']  # Target column
 
 # Step 4: Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+    )
 
 # Step 5: Scale the features
 scaler = StandardScaler()
